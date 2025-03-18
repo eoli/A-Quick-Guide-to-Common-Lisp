@@ -1,0 +1,207 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Common Lisp快速手册</title>
+<style type="text/css">
+.none-border>* {
+	border-top-width: 0px;
+	border-right-width: 0px;
+	border-bottom-width: 0px;
+	border-left-width: 0px;
+	padding: 0px;
+
+}
+
+table {
+   margin: 0 auto;
+   border-collapse: collapse;
+   cellpadding: 5;
+}
+
+th, td {
+   border: 0.5px solid black;
+   padding: 8px 12px;
+}
+		
+body {
+	padding: auto;
+	margin: 20px;
+	
+
+}
+</style><link href="page.css" rel="stylesheet" type="text/css"></head>
+
+<body>
+
+<h1 style="text-align: center;">Common Lisp快速手册</h1>
+<p style="text-align: center;">更新时间:2025-3-18</p>
+<table  class="none-border">
+  <tr>
+    <td width="352">Common Lisp Sepecfication</td>
+    <td><p>ANSI规范了Common Lisp的语言核心，自1999年发布之后就没有再进行更新。两个在线的网站都可以查看</p>
+      <p><a href="https://www.lispworks.com/documentation/HyperSpec/Front/Contents.htm">https://www.lispworks.com/documentation/HyperSpec/Front/Contents.htm</a></p>
+    <p>
+<a href="https://franz.com/support/documentation/11.0/ansicl/ansicl.htm">https://franz.com/support/documentation/11.0/ansicl/ansicl.htm</a></p></td>
+  </tr>
+  <tr>
+    <td>Common Lisp资源汇集</td>
+    <td><p><a href="https://common-lisp.net/">Common-lisp.net</a></p></td>
+  </tr>
+  <tr>
+    <td >Common Lisp的实现</td>
+    <td><p>目前常见的Lisp实现有</p>
+      <ul>
+        <li><i></i>SBCL</li>
+        <li>CMUL</li>
+        <li>Allegro CL</li>
+      </ul>
+      
+    <p>这里可以找到更多实现：<a href="https://common-lisp.net/implementations">Common Lisp Implementations</a></p></td>
+  </tr>
+  <tr>
+    <td >我应该选择哪个实现</td>
+    <td><p>各种实现在规范的基础上完成对Common Lisp的实现，并加入各家独自的扩展，如加入ffi支持，多线程支持等 </p>
+    <p>后面的内容我们使用SBCL这个实现。</p></td>
+  </tr>
+  <tr>
+    <td >我能找到一些参考的例子吗</td>
+    <td><p>可以，<a href="https://lispcookbook.github.io/cl-cookbook/">The Common Lisp Cookbook</a> 这本在线的书籍提供了很全面的内容</p>
+    <p>从基本的语法到如何调用外部库，进行性能优化，都有对应的例子</p></td>
+  </tr>
+  <tr>
+    <td >我能使用Common Lisp进行GUI编程吗</td>
+    <td><p>SBCL 支持一些GUI库的绑定，例如tk的绑定ltk，Qt的绑定等。
+      </p>
+      <h3>LTK如何工作</h3>
+      <p>比较简单的是ltk</p>
+      <p>ltk的绑定方式是使用(run-program)开启一个wish进程，然后使用socket和这个进程进行通信，从而控制wish绘制出图形界面。</p>
+      <p>这个连接提供更多信息</p>
+    <p><a href="http://www.peter-herth.de/ltk/">ltk</a> - A binding for the Tk toolkit. <a href="http://opensource.franz.com/preamble.html">LLGPL</a> or <a href="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html">GNU LGPL2.1</a>.</p></td>
+  </tr>
+  <tr>
+    <td >如何调用外部的函数？例如用C语言导出的动态链接库</td>
+    <td><p>这件事情需要使用由Common Lisp实现所提供的外部函数接口完成。</p>
+    <p>在SBCL中，这个功能由sb-alien库提供，你也可以使用Common Lisp通用的cffi库</p>
+    <p>&nbsp;</p></td>
+  </tr>
+  <tr>
+    <td >package有什么用</td>
+    <td><p>可以通过名字在package中查找symbol，例如可以在cl这个package中找到ANSI预定义的symbol
+      </p>
+    <p>使用*package*变量可以获取到当前所在的package</p></td>
+  </tr>
+  <tr>
+    <td >load和require的区别是什么</td>
+    <td><p>load直接加载源码并运行</p>
+    <p>require会检查*modules*这个变量，如果存在了就跳过加载</p></td>
+  </tr>
+  <tr>
+    <td >ASDF，quicklisp是什么</td>
+    <td><p>ASDF是用来构建和加载Common Lisp程序的工具，它知道依赖但不会给你自动下载</p>
+    <p>quicklisp在ASDF基础上构建的工具，它<strong>可以自动下载</strong>所需的依赖，可以用来导入新的库</p>
+    <p>比如，你需要使用str这个库，你可以(ql:quickload  &quot;str&quot;)</p></td>
+  </tr>
+  <tr>
+    <td >quicklisp是怎么工作的，我启动sbcl后它为什么有效</td>
+    <td><p>在用户目录下，存在一个.sbclrc文件，quickload安装时会写入一些内容到其中<br>
+    </p>
+      <hr/>
+        ;;; The following lines added by ql:add-to-init-file:<br>
+        #-quicklisp<br>
+        (let ((quicklisp-init (merge-pathnames &quot;quicklisp/setup.lisp&quot;<br>
+        (user-homedir-pathname))))<br>
+        (when (probe-file quicklisp-init)<br>
+      (load quicklisp-init)))</p>
+      
+      <hr/>
+      <p>sbcl启动时会自动加载这个文件<br>
+  </p></td>
+  </tr>
+  <tr>
+    <td >sbcl的runtime提供了什么</td>
+    <td><p>sbcl.exe是windows上的runtime </p>
+      <p>sbcl.core是lisp源码编译后得到的镜像文件，里面存放了机器码和其它信息</p>
+    <p> sbcl负责加载sbcl.core到内存，并为sbcl.core镜像的运行提供了可调用的一些列函数接口。</p>
+    <p>例如，windows上loadlibrary这个函数就是sbcl.exe加载win32.dll后通过将Windows的LoadLibray函数地址放在了sbcl.core能访问到的内存地址上</p>
+    <p>--- src\code\win32-foreign-load.lisp---</p>
+    <p>(define-alien-routine (&quot;LoadLibraryA&quot; loadlibrary) hinstance (file c-string))    </p>
+    <p>sbcl.exe会在启动时加载kernel32.dll</p>
+    <p><img src="assets/loadlibrary3.png" alt="" width="465" height="225"></p>
+    <p><img src="assets/loadlibrary3-1.png" alt="" width="465" height="255"></p>
+    <p><img src="assets/loadlibrary2.png" alt="" width="594" height="54"></p>
+    <p><img src="assets/loadlibrary.png" alt="" width="426" height="224"></p>
+    <p> * When the runtime loads the core (cold-sbcl.core initially,<br>
+* sbcl.core later), runtime should do its part of the protocol by (1)<br>
+* traversing a list of ``runtime symbols'' prepared by Genesis and<br>
+* dumped as a static symbol value, (2) resolving each name from this<br>
+* list to an address (stubbing unresolved ones with<br>
+* undefined_alien_address or undefined_alien_function), (3) adding an<br>
+* entry for each symbol somewhere near the beginning of linkage table<br>
+* space (location is provided by the core).</p> </td>
+  </tr>
+  <tr>
+    <td >type和class</td>
+    <td><p>type和class对可以用来给对象进行分类，type只是简单的给编译器提供标签信息，class能存储slots和method</p>
+    <p>可以使用deftype,defstruct来定义新的type</p>
+    <p>使用defclass可以用来定义class，使用make-instance实例化class</p>
+    <p>* (setq x (defclass c1 () () ))<br>
+      #&lt;STANDARD-CLASS COMMON-LISP-USER::C1&gt;<br>
+      * (type-of x)<br>
+    STANDARD-CLASS</p>
+    <p>* (make-instance 'c1)<br>
+      #&lt;C1 {235A8901}&gt;<br>
+      * (type-of (make-instance 'c1))<br>
+    C1</p></td>
+  </tr>
+  <tr>
+    <td >type specifier</td>
+    <td><p>内建的基本type有integer,float等</p>
+    <p>可以使用or，and这些进行逻辑组合，得到的还是type specifier</p>
+    <p>&nbsp;</p></td>
+  </tr>
+  <tr>
+    <td >sbcl的runtime和sbcl.core是如何编译出来的</td>
+    <td><p>1. 找到一台拥有c编译器和common lisp运行环境的计算机</p>
+    <p>2. 先运行make-config.sh生成配置信息</p>
+    <p>3. 使用host1.sh启动common lisp编译部分lisp源码得到xc交叉编译器,genesis和用于c编译的信息</p>
+    <p>4. 使用target1.sh生成sbcl.exe,同时grovel-headers.c被编译运行产生stuff-groveled-from-headers.lisp</p>
+    <p>5. host2.sh 运行xc编译部分sbcl的源码和上面生成的grovel lisp文件，得到fasl</p>
+    <p>6. genesis.sh 使用第3步的genesis来模拟加载第5步得到的fasl生成cold-sbcl.core</p>
+    <p>7. 使用生成的sbcl.exe加载cold-sbcl.core，编译sbcl源码得到最终的sbcl.core</p>
+    <p>参考<a href="https://research.gold.ac.uk/id/eprint/2336/1/sbcl.pdf">SBCL: a Sanely-Bootstrappable Common Lisp</a></p></td>
+  </tr>
+  <tr>
+    <td >sbcl可以直接在机器码层面上编程吗？</td>
+    <td><p>可以。SBCL 作为 Common Lisp 直接到机器码的编译器实现，可以说十分擅长在 Lisp 程序里插入汇编程序段。</p>
+    <p>参考<a href="https://emacs-china.org/t/common-lisp-sbcl-low-level/23236">在 Common Lisp (SBCL) 里进行面向机器的 Low-level 编程</a></p></td>
+  </tr>
+  <tr>
+    <td >sap</td>
+    <td><p>SBCL提供了SAP（System Area Pointer),可以直接操作物理内存，</p>
+      <p>the lower-level System Area Pointers (or SAPs) can be used where necessary to provide untyped access to  foreign memory.</p>
+      <p>&nbsp;</p>
+      <p>sb-sys:int-sap machine-address [Function]  </p>
+      <p>Creates a SAP pointing at the virtual address machine-address. </p>
+      <p>&nbsp;</p>
+      <p>sb-sys:sap-ref-32 sap offset [Function</p>
+      <p>]  Access the value of the memory location at offset bytes from sap. This form may also be used with setf  to alter the memory at that location.</p>
+      <p>&nbsp;</p>
+      <p>sap的实现是直接生成机器码 </p>
+    <p><img src="assets/sap.png" alt="" width="968" height="876"></p>
+    <p>参考 <a href="https://www.sbcl.org/manual/sbcl.pdf">sbcl手册</a>的9.3.1.1 Untyped memory</p></td>
+  </tr>
+  <tr>
+    <td >&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td >&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+
+
+
+</body>
+</html>
